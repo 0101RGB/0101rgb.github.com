@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/test.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+
+  <body style="background-color:#444;">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+          <h4><a class="navbar-brand" href="../index.html">TastyLine</a></h4>
+          <button onclick="reset()"> reset </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <form class="navbar-form navbar-right" role="search">
+              <button id="save-button" onclick="countSubtitles()"><h4><font color="white">Script Download <span class="glyphicon glyphicon-floppy-disk"></span></font></h4></button>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="wrap">
+      <h1 class="title" align="center">hello world</h1>
+
+      <!-- video container -->
+      <div class="videocontainer" align="center">
+        <video id="mainvideo">
+          <source src="test.mp4" type="video/mp4" />
+        </video>
+        <!-- <div></div> -->
+        <div id="subtitle-view" align="center">hi</div>
+      </div>
+
+      <!-- line container -->
+      <div style="height:2px; background-color:red;"></div>
+
+      <!-- timeline container -->
+      <div id="timeline">
+        <canvas id="timeline_center"></canvas>
+        <div id="backcanvas"></div>
+        </div>
+      </div>
+
+      <div class="subtitlelist">
+        <ul id="subtitleul"></ul>
+      </div>
+    </div>
+
+    <script src="./js/test.js"></script>
+    <script src="./js/boostrap.min.js"></script>
+    <script src="./js/jquery-1.8.3.min.js"></script>
+  </body>
+</html>
