@@ -1,8 +1,5 @@
-var selected= 0;
-var tempTimeInterval;
-var syncTimeInterval;
-var syncTemp;
-var isSyncing= false;
+var selected= 0, isSyncing= false;
+var tempTimeInterval, syncTimeInterval, syncTemp;
 
 window.onload= function(){
   var canvas= document.getElementById("backcanvas");
@@ -16,8 +13,26 @@ window.onload= function(){
 function reset(){
   var canvas= document.getElementById("backcanvas");
   var width= window.innerWidth;
-
   canvas.style.left= (parseInt(window.innerWidth)/2) + 'px';
+  document.getElementById("mainvideo").currentTime= 0;
+}
+
+function overlayCheck(){
+  var container = document.getElementById("backcanvas");
+  var last, count= 0;
+
+  for (var i = 0; i < container.childNodes.length; i++) {
+    if (container.childNodes[i].nodeName == "div" || container.childNodes[i].nodeName == "DIV") {
+      var linepos= parseInt(document.getElementById("timeline_center").style.left) - parseInt(document.getElementById("backcanvas").style.left);
+      var left= parseInt(container.childNodes[i].style.left);
+      var width= parseInt(container.childNodes[i].style.width);
+      if(linepos >= left && linepos<=(left + width)){
+        console.log("overlayed");
+        getSubtitleFrame(i, "li");
+        break;
+      }
+    }
+  }
 }
 
 function keydownevent(event) {
@@ -32,9 +47,7 @@ function keydownevent(event) {
         var canvasLeft= parseInt(canvasId.style.left, 10);
         canvasId.style.left= (canvasLeft-2)+'px';
         canvasId.style.width= (parseInt(canvasId.style.width)+2)+'px';
-
-        var line= parseInt(window.innerWidth)/2;
-        // var checkOverlay= 
+        overlayCheck();
       }, 10);
     }
     else {
@@ -61,7 +74,6 @@ function keydownevent(event) {
   } else if(key == 39){
     if(!video.paused) {
       if(isSyncing == true) {
-        console.log("syncing ing");
         setEnd();
       }
     }
@@ -75,18 +87,30 @@ function keydownevent(event) {
   overlayText();
 }
 
-function getSubtitleFrame(arg) {
-  var ul = document.getElementById("backcanvas");
-  var last, count= 0;
+function getSubtitleFrame(arg, type) {
+  if(type == "div"){
+    var ul = document.getElementById("backcanvas");
+    var last, count= 0;
 
-  for (var i = 0; i < ul.childNodes.length; i++) {
-    if (ul.childNodes[i].nodeName == "div" || ul.childNodes[i].nodeName == "DIV") {
-      // count++;
-      // last= ul.childNodes[i];
-      if(parseInt(i) == parseInt(arg)){
-        // return ul.childNodes[i];
-        syncTemp= ul.childNodes[i];
-        break;
+    for (var i = 0; i < ul.childNodes.length; i++) {
+      if (ul.childNodes[i].nodeName == "div" || ul.childNodes[i].nodeName == "DIV") {
+        if(parseInt(i) == parseInt(arg)){
+          syncTemp= ul.childNodes[i];
+          break;
+        }
+      }
+    }
+  } else {
+    var ul = document.getElementById("subtitleul");
+    var count= 0;
+
+    for (var i = 0; i < ul.childNodes.length; i++) {
+      if (ul.childNodes[i].nodeName == "li" || ul.childNodes[i].nodeName == "LI") {
+        if(parseInt(i) == parseInt(arg)){
+          document.getElementById("subtitle-view").innerText= ul.childNodes[i].firstChild.value;
+
+          break;
+        }
       }
     }
   }
@@ -94,18 +118,15 @@ function getSubtitleFrame(arg) {
 
 function setStart(){
   isSyncing= true;
-  getSubtitleFrame(getSubtitleIndex());
-
-  // var tempLeft= (parseInt(document.getElementById("timeline_center").style.left) - parseInt(document.getElementById("backcanvas").style.left)) + 'px';
+  getSubtitleFrame(getSubtitleIndex(), "div");
   var tempLeft= (parseInt(document.getElementById("timeline_center").style.left) - parseInt(document.getElementById("backcanvas").style.left)) + 'px';
   console.log("left : "+tempLeft);
   syncTemp.style.left= tempLeft;
   syncTemp.style.width= '0px';
+  document.activeElement.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime;
 
   syncTimeInterval= setInterval(function() {
     syncTemp.style.width= (parseInt(syncTemp.style.width)+2)+'px';
-    // syncTemp.style.left= (parseInt(syncTemp.style.left)-2)+'px';
-    // console.log(syncTemp.style.left);
   }, 10);
 }
 
@@ -161,7 +182,7 @@ function countSubtitles() {
   return count;
 }
 
-function getSubtitleIndex(){
+function getSubtitleIndex(a){
   var ul = document.getElementById("subtitleul");
   var count= 0;
 
