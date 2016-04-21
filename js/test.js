@@ -14,7 +14,7 @@ window.onload= function(){
     var video= document.getElementById("mainvideo");
     var time= video.duration * (seekBar.value / 100);
     var timeline= document.getElementById("backcanvas");
-    timeline.style.left= (parseInt(window.innerWidth)/2-parseInt(video.duration)/10*3)+'px';
+    timeline.style.left= (parseInt(window.innerWidth)/2-parseInt(video.duration)*seekBar.value/10)+'px';
     video.currentTime= time;
   });
   var video= document.getElementById("mainvideo");
