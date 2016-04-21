@@ -8,6 +8,22 @@ window.onload= function(){
   canvas.style.width= (parseInt(window.innerWidth)/2) + 'px';
   document.getElementById("timeline_center").style.left= (parseInt(window.innerWidth)/2) + 'px';
   addField();
+
+  var seekBar = document.getElementById("seek-bar");
+  seekBar.addEventListener("change", function(){
+    var video= document.getElementById("mainvideo");
+    var time= video.duration * (seekBar.value / 100);
+    var timeline= document.getElementById("backcanvas");
+    timeline.style.left= (parseInt(window.innerWidth)/2-parseInt(video.duration)/10*3)+'px';
+    video.currentTime= time;
+  });
+  var video= document.getElementById("mainvideo");
+  video.addEventListener("timeupdate", function(){
+    var value= (100/video.duration) * video.currentTime;
+    seekBar.value= value;
+  });
+  seekBar.style.left= video.style.left;
+  seekBar.style.width= video.style.width;
 }
 
 function reset(){
@@ -45,8 +61,8 @@ function keydownevent(event) {
       tempTimeInterval= setInterval(function() {
         var canvasId= document.getElementById("backcanvas");
         var canvasLeft= parseInt(canvasId.style.left, 10);
-        canvasId.style.left= (canvasLeft-2)+'px';
-        canvasId.style.width= (parseInt(canvasId.style.width)+2)+'px';
+        canvasId.style.left= (canvasLeft-parseInt(video.duration)/10)+'px';
+        canvasId.style.width= (parseInt(canvasId.style.width)+parseInt(video.duration)/10)+'px';
         overlayCheck();
       }, 10);
     }
@@ -126,7 +142,7 @@ function setStart(){
   document.activeElement.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime;
 
   syncTimeInterval= setInterval(function() {
-    syncTemp.style.width= (parseInt(syncTemp.style.width)+2)+'px';
+    syncTemp.style.width= (parseInt(syncTemp.style.width)+parseInt(video.duration)/10)+'px';
   }, 10);
 }
 
