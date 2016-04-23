@@ -13,13 +13,17 @@ window.onload= function(){
   seekBar.addEventListener("change", function(){
     var video= document.getElementById("mainvideo");
     var time= video.duration * (seekBar.value / 100);
+    var timestr= time+':'+video.duration;
     var timeline= document.getElementById("backcanvas");
     timeline.style.left= (parseInt(window.innerWidth)/2-parseInt(video.duration)*seekBar.value/10)+'px';
+    document.getElementById("timetext").innerText= timestr;
     video.currentTime= time;
   });
   var video= document.getElementById("mainvideo");
   video.addEventListener("timeupdate", function(){
     var value= (100/video.duration) * video.currentTime;
+    var timestr= video.currentTime+':'+video.duration;
+    document.getElementById("timetext").innerText= timestr;
     seekBar.value= value;
   });
   seekBar.style.left= video.style.left;
@@ -89,6 +93,7 @@ function keydownevent(event) {
     document.activeElement.parentNode.nextElementSibling.firstChild.focus();
   } else if(key == 39){
     if(!video.paused) {
+      event.preventDefault();
       if(isSyncing == true) {
         setEnd();
       }
@@ -96,6 +101,7 @@ function keydownevent(event) {
     // countSubtitles();
   } else if(key == 37){
     if(!video.paused) {
+      event.preventDefault();
       setStart();
     }
     // countSubtitles();
@@ -149,6 +155,7 @@ function setStart(){
 function setEnd(){
   isSyncing= false;
   clearInterval(syncTimeInterval);
+  document.activeElement.nextElementSibling.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime;
 }
 
 function addField(){
@@ -159,11 +166,16 @@ function addField(){
   input.setAttribute("class", "subtitle-text");
   input.setAttribute("onkeydown", "keydownevent(event)");
   item.appendChild(input);
-  var timing= document.createElement("span");
-  timing.setAttribute("class", "subtitle-timing");
-  timing.innerText= document.getElementById("mainvideo").currentTime;
-  timing.setAttribute("align", "right");
-  item.appendChild(timing);
+  var timingstart= document.createElement("span");
+  timingstart.setAttribute("class", "subtitle-start");
+  timingstart.innerText= document.getElementById("mainvideo").currentTime;
+  timingstart.setAttribute("align", "right");
+  item.appendChild(timingstart);
+  var timingend= document.createElement("span");
+  timingend.setAttribute("class", "subtitle-end");
+  timingend.innerText= document.getElementById("mainvideo").currentTime;
+  timingend.setAttribute("align", "right");
+  item.appendChild(timingend);
   item.setAttribute("id", "subtitle");
 
   container.appendChild(item);

@@ -9,11 +9,15 @@
 .subtitle-text {
   border-width:0px;
   margin-left:5px;
-  width:80%;
+  width:60%;
   border:none;
 }
-.subtitle-timing{
+.subtitle-start{
   background-color:red;
+}
+.subtitle-end{
+  background-color: yellow;
+  margin-left: 5px;
 }
 #timeline {
   position:relative;
