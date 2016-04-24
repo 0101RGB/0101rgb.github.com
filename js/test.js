@@ -12,10 +12,10 @@ window.onload= function(){
   var seekBar = document.getElementById("seek-bar");
   seekBar.addEventListener("change", function(){
     var video= document.getElementById("mainvideo");
-    var time= video.duration * (seekBar.value / 100);
-    var timestr= time+':'+video.duration;
+    var time= parseDouble(video.currentTime) * (parseDouble(seekBar.value) / 100);
+    var timestr= video.currentTime+':'+video.duration;
     var timeline= document.getElementById("backcanvas");
-    timeline.style.left= (parseInt(window.innerWidth)/2-parseInt(video.duration)*seekBar.value/10)+'px';
+    timeline.style.left= (parseInt(window.innerWidth)/2-time*100)+'px';
     document.getElementById("timetext").innerText= timestr;
     video.currentTime= time;
   });
@@ -49,10 +49,11 @@ function overlayCheck(){
       if(linepos >= left && linepos<=(left + width)){
         console.log("overlayed");
         getSubtitleFrame(i, "li");
-        break;
+        return ;
       }
     }
   }
+  document.getElementById("subtitle-view").innerText= "";
 }
 
 function keydownevent(event) {
@@ -65,8 +66,8 @@ function keydownevent(event) {
       tempTimeInterval= setInterval(function() {
         var canvasId= document.getElementById("backcanvas");
         var canvasLeft= parseInt(canvasId.style.left, 10);
-        canvasId.style.left= (canvasLeft-parseInt(video.duration)/10)+'px';
-        canvasId.style.width= (parseInt(canvasId.style.width)+parseInt(video.duration)/10)+'px';
+        canvasId.style.left= (canvasLeft-2)+'px';
+        canvasId.style.width= (parseInt(canvasId.style.width)+2)+'px';
         overlayCheck();
       }, 10);
     }
@@ -74,39 +75,69 @@ function keydownevent(event) {
       video.pause();
       if(isSyncing == true) setEnd();
       clearInterval(tempTimeInterval);
+      return ;
     }
   }
   else if(key == 13) {
     var parent= document.activeElement.parentNode;
-    if(parent.nextElementSibling) parent.nextElementSibling.firstChild.focus();
-    else addField();
+    // if(parent.nextElementSibling) parent.nextElementSibling.firstChild.focus();
+    // else
+    addField();
   }
   else if(key == 38){
+    var activeParent= document.activeElement.parentNode;
     if(!video.paused){
       if(isSyncing == true) setEnd();
+      activeParent.previousElementSibling.firstChild.focus();
+      return ;
     }
-    document.activeElement.parentNode.previousElementSibling.firstChild.focus();
+    if(activeParent.previousElementSibling){
+      var previousActive= activeParent.previousElementSibling.firstChild;
+      if(checkBlank() == false) activeParent.previousElementSibling.firstChild.focus();
+      else previousActive.focus();
+    }
+    // document.activeElement.parentNode.previousElementSibling.firstChild.focus();
   } else if(key == 40){
+  var activeParent= document.activeElement.parentNode;
     if(!video.paused){
       if(isSyncing == true) setEnd();
+      activeParent.nextElementSibling.firstChild.focus();
+      return ;
     }
-    document.activeElement.parentNode.nextElementSibling.firstChild.focus();
+    if(activeParent.nextElementSibling){
+      var nextActive= activeParent.nextElementSibling.firstChild;
+      if(checkBlank() == false) activeParent.nextElementSibling.firstChild.focus();
+      else nextActive.focus();
+    }
+    // document.activeElement.parentNode.nextElementSibling.firstChild.focus();
   } else if(key == 39){
     if(!video.paused) {
       event.preventDefault();
       if(isSyncing == true) {
         setEnd();
+        if(document.activeElement.parentNode.nextElementSibling)
+          document.activeElement.parentNode.nextElementSibling.firstChild.focus();
       }
     }
-    // countSubtitles();
   } else if(key == 37){
     if(!video.paused) {
       event.preventDefault();
       setStart();
     }
-    // countSubtitles();
   }
   overlayText();
+}
+
+function checkBlank(){
+  var active= document.activeElement;
+  if(active.nodeName == 'input' || active.nodeName == 'INPUT'){
+    if(active.value.length < 1) {
+      document.getElementById("backcanvas").removeChild(getSubtitleFrame(getSubtitleIndex(), "div"));
+      document.getElementById("subtitleul").removeChild(active.parentNode);
+      return true;
+    }
+    return false;
+  }
 }
 
 function getSubtitleFrame(arg, type) {
@@ -117,8 +148,8 @@ function getSubtitleFrame(arg, type) {
     for (var i = 0; i < ul.childNodes.length; i++) {
       if (ul.childNodes[i].nodeName == "div" || ul.childNodes[i].nodeName == "DIV") {
         if(parseInt(i) == parseInt(arg)){
-          syncTemp= ul.childNodes[i];
-          break;
+          return ul.childNodes[i];
+          // break;
         }
       }
     }
@@ -130,7 +161,6 @@ function getSubtitleFrame(arg, type) {
       if (ul.childNodes[i].nodeName == "li" || ul.childNodes[i].nodeName == "LI") {
         if(parseInt(i) == parseInt(arg)){
           document.getElementById("subtitle-view").innerText= ul.childNodes[i].firstChild.value;
-
           break;
         }
       }
@@ -140,7 +170,7 @@ function getSubtitleFrame(arg, type) {
 
 function setStart(){
   isSyncing= true;
-  getSubtitleFrame(getSubtitleIndex(), "div");
+  syncTemp = getSubtitleFrame(getSubtitleIndex(), "div");
   var tempLeft= (parseInt(document.getElementById("timeline_center").style.left) - parseInt(document.getElementById("backcanvas").style.left)) + 'px';
   console.log("left : "+tempLeft);
   syncTemp.style.left= tempLeft;
@@ -148,7 +178,7 @@ function setStart(){
   document.activeElement.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime;
 
   syncTimeInterval= setInterval(function() {
-    syncTemp.style.width= (parseInt(syncTemp.style.width)+parseInt(video.duration)/10)+'px';
+    syncTemp.style.width= (parseInt(syncTemp.style.width)+2)+'px';
   }, 10);
 }
 
@@ -176,9 +206,17 @@ function addField(){
   timingend.innerText= document.getElementById("mainvideo").currentTime;
   timingend.setAttribute("align", "right");
   item.appendChild(timingend);
-  item.setAttribute("id", "subtitle");
-
-  container.appendChild(item);
+  if(countSubtitles() == 0)
+    container.appendChild(item);
+  else{
+    var active= document.activeElement;
+    if(active.nodeName == 'INPUT' || active.nodeName == 'input'){
+      var activeParent= active.parentNode;
+      if(activeParent.nextElementSibling)
+        container.insertBefore(item, activeParent.nextElementSibling);
+      else container.appendChild(item);
+    }
+  }
   input.focus();
 
   var subtitlecontainer= document.getElementById("backcanvas");
