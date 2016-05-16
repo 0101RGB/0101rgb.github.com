@@ -1,5 +1,6 @@
 var selected= 0, isSyncing= false;
 var tempTimeInterval, syncTimeInterval, syncTemp;
+var pressedKeys= {};
 
 window.onload= function(){
   var canvas= document.getElementById("backcanvas");
@@ -117,6 +118,7 @@ function keydownevent(event) {
         setEnd();
         if(document.activeElement.parentNode.nextElementSibling)
           document.activeElement.parentNode.nextElementSibling.firstChild.focus();
+          if(event.altKey)  setStart();
       }
     }
   } else if(key == 37){
@@ -198,12 +200,12 @@ function addField(){
   item.appendChild(input);
   var timingstart= document.createElement("span");
   timingstart.setAttribute("class", "subtitle-start");
-  timingstart.innerText= document.getElementById("mainvideo").currentTime;
+  timingstart.innerText= "start time";
   timingstart.setAttribute("align", "right");
   item.appendChild(timingstart);
   var timingend= document.createElement("span");
   timingend.setAttribute("class", "subtitle-end");
-  timingend.innerText= document.getElementById("mainvideo").currentTime;
+  timingend.innerText= "end time";
   timingend.setAttribute("align", "right");
   item.appendChild(timingend);
   if(countSubtitles() == 0)

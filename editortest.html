@@ -33,7 +33,7 @@
       <!-- video container -->
       <div class="videocontainer" align="center">
         <video id="mainvideo" style="width:640px; height:480px;">
-          <source src="small.mp4" type="video/mp4" />
+          <source src="test.mp4" type="video/mp4" />
           <source src="small.ogv" type="video/ogv" />
           <source src="small.webm" type="video/webm" />
         </video>
@@ -54,8 +54,26 @@
         </div>
       </div>
 
-      <div class="subtitlelist">
-        <ul id="subtitleul"></ul>
+      <!-- bottom view -->
+      <div style="background-color:black;" class="col-xs-12s">
+        <div class="col-xs-2" style="background-color:black; height:100%">
+          <div class="col-xs-12 bg-info" style="z-index=3; padding:5px; margin-top:10px;">
+              <kbd>Tab</kbd> : Play / Pause
+          </div>
+          <div class="col-xs-12 bg-success" style="z-index=3; padding:5px; margin-top:10px;">
+              <kbd>Up / Down</kbd> : Move Input View
+          </div>
+          <div class="col-xs-12 bg-danger" style="z-index=3; padding:5px; margin-top:10px;">
+              <kbd>Left / Right</kbd> : Set Start / End
+          </div>
+        </div>
+
+        <div class="subtitlelist col-xs-8">
+          <ul id="subtitleul"></ul>
+        </div>
+
+        <div class="col-xs-2">
+        </div>
       </div>
     </div>
 

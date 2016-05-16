@@ -13,11 +13,14 @@
   border:none;
 }
 .subtitle-start{
-  background-color:red;
+  /*background-color:red;*/
+  margin-left:10px;
+  color: #666;
 }
 .subtitle-end{
-  background-color: yellow;
-  margin-left: 5px;
+  /*background-color: yellow;*/
+  margin-left: 10px;
+  color: #666
 }
 #timeline {
   position:relative;
@@ -67,4 +70,11 @@ video {
 }
 ul {
     list-style-type: none;
+}
+li {
+  background-color: #fff;
+  width: 100%;
+  padding: 10px;
+  border: solid 5px #c9c9c9;
+  transition: border 0.3s;
 }
