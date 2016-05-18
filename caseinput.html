@@ -1,0 +1,27 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <p>
+      Input the formula :
+      <input id="formula" type="text" style="width:500px;"/>
+      <input id="accept" type="button" value="go" onclick="gopage()" />
+    </p>
+    <script>
+      function gopage(){
+        var formula= document.getElementById("formula").value;
+        var terms= formula.split("+");
+        var variables= [];
+        for(i=0; i<terms.length; i++){
+          var temp= terms[i].split("v");
+          var var1= temp[1], var2= temp[2];
+          if(!isInArray(var1, variables)) variables.push(var1);
+          if(!isInArray(var2, variables)) variables.push(var2);
+        }
+        var filename= "t"+terms.length+"n"+variables.length+".html";
+        window.location.href="./"+filename;
+      }
+      function isInArray(val, arr) { return arr.indexOf(val) > -1; }
+    </script>
+  </body>
+</html>
