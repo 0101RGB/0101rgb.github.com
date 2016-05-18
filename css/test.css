@@ -9,17 +9,19 @@
 .subtitle-text {
   border-width:0px;
   margin-left:5px;
-  width:60%;
+  width:70%;
   border:none;
 }
 .subtitle-start{
   /*background-color:red;*/
   margin-left:10px;
+  width:15%;
   color: #666;
 }
 .subtitle-end{
   /*background-color: yellow;*/
   margin-left: 10px;
+  width:15%;
   color: #666
 }
 #timeline {

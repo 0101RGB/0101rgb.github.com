@@ -177,7 +177,7 @@ function setStart(){
   console.log("left : "+tempLeft);
   syncTemp.style.left= tempLeft;
   syncTemp.style.width= '0px';
-  document.activeElement.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime;
+  document.activeElement.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime.toFixed(5);
 
   syncTimeInterval= setInterval(function() {
     syncTemp.style.width= (parseInt(syncTemp.style.width)+2)+'px';
@@ -187,27 +187,31 @@ function setStart(){
 function setEnd(){
   isSyncing= false;
   clearInterval(syncTimeInterval);
-  document.activeElement.nextElementSibling.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime;
+  document.activeElement.nextElementSibling.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime.toFixed(5);
 }
 
 function addField(){
   var container= document.getElementById("subtitleul");
   var item= document.createElement("li");
+
   var input= document.createElement("input");
   input.type= "text";
   input.setAttribute("class", "subtitle-text");
   input.setAttribute("onkeydown", "keydownevent(event)");
   item.appendChild(input);
+
   var timingstart= document.createElement("span");
   timingstart.setAttribute("class", "subtitle-start");
   timingstart.innerText= "start time";
   timingstart.setAttribute("align", "right");
   item.appendChild(timingstart);
+
   var timingend= document.createElement("span");
   timingend.setAttribute("class", "subtitle-end");
   timingend.innerText= "end time";
   timingend.setAttribute("align", "right");
   item.appendChild(timingend);
+
   if(countSubtitles() == 0)
     container.appendChild(item);
   else{
@@ -230,23 +234,24 @@ function addField(){
 }
 
 function overlayText(){
-  var text= document.activeElement;
-  document.getElementById("subtitle-view").innerText= text.value;
+  document.getElementById("subtitle-view").innerText= checkTextLength(document.activeElement.value);
+}
+function checkTextLength(str){
+  if(str.length <= 40) return str;
+  if(str.indexOf(".")>0) return str.substring(0, str.indexOf(".")+1)+"\n"+str.substring(str.indexOf(".")+1);
+  if(str.indexOf("!")>0) return str.substring(0, str.indexOf("!")+1)+"\n"+str.substring(str.indexOf("!")+1);
+  if(str.indexOf("?")>0) return str.substring(0, str.indexOf("?")+1)+"\n"+str.substring(str.indexOf("?")+1);
+  if(str.indexOf(",")>0) return str.substring(0, str.indexOf(",")+1)+"\n"+str.substring(str.indexOf(",")+1);
+  for(i=20; i<str.length; i++)
+    if(str.indexOf(" ") == i) return str.substring(0, i+1)+"\n"+str.substring(i+1);
 }
 
 function countSubtitles() {
   var ul = document.getElementById("subtitleul");
   var liNodes = [];
   var count= 0;
-
-  for (var i = 0; i < ul.childNodes.length; i++) {
-    if (ul.childNodes[i].nodeName == "LI" || ul.childNodes[i].nodeName == "li") {
-      // liNodes.push(ul.childNodes[i]);
-      count++;
-    }
-  }
-  // alert(count);
-  console.log(count);
+  for (var i = 0; i < ul.childNodes.length; i++)
+    if (ul.childNodes[i].nodeName == "LI" || ul.childNodes[i].nodeName == "li") count++;
   return count;
 }
 
