@@ -48,7 +48,6 @@ function overlayCheck(){
       var left= parseInt(container.childNodes[i].style.left);
       var width= parseInt(container.childNodes[i].style.width);
       if(linepos >= left && linepos<=(left + width)){
-        console.log("overlayed");
         getSubtitleFrame(i, "li");
         return ;
       }
@@ -178,6 +177,7 @@ function setStart(){
   syncTemp.style.left= tempLeft;
   syncTemp.style.width= '0px';
   document.activeElement.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime.toFixed(5);
+  document.activeElement.nextElementSibling.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime.toFixed(4);
 
   syncTimeInterval= setInterval(function() {
     syncTemp.style.width= (parseInt(syncTemp.style.width)+2)+'px';
@@ -187,7 +187,7 @@ function setStart(){
 function setEnd(){
   isSyncing= false;
   clearInterval(syncTimeInterval);
-  document.activeElement.nextElementSibling.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime.toFixed(5);
+  document.activeElement.nextElementSibling.nextElementSibling.innerText= document.getElementById("mainvideo").currentTime.toFixed(4);
 }
 
 function addField(){
@@ -233,9 +233,7 @@ function addField(){
   subtitlecontainer.appendChild(newsubtitle);
 }
 
-function overlayText(){
-  document.getElementById("subtitle-view").innerText= checkTextLength(document.activeElement.value);
-}
+function overlayText(){ document.getElementById("subtitle-view").innerText= checkTextLength(document.activeElement.value); }
 function checkTextLength(str){
   if(str.length <= 40) return str;
   if(str.indexOf(".")>0) return str.substring(0, str.indexOf(".")+1)+"\n"+str.substring(str.indexOf(".")+1);
